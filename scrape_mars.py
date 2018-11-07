@@ -3,6 +3,7 @@ from splinter import Browser
 from bs4 import BeautifulSoup
 import pandas as pd
 from pprint import pprint
+from time import sleep
 
 def scrape():
 
@@ -18,15 +19,18 @@ def scrape():
     # Hi, Windows user initializing Splinter here...if you're a Mac user, comment this out and use the lines above
     executable_path = {'executable_path': 'chromedriver.exe'}
     browser = Browser('chrome', **executable_path, headless=True)
-
+    
+    # Run the function below:
+    first_title, first_paragraph = mars_news(browser)
+    
     # Run the functions below and store into a dictionary
     results = {
-        "Title": first_title,
-        "Paragraph": first_paragraph,
-        "Image_URL": jpl_image(browser),
-        "Weather": mars_weather_tweet(browser),
-        "Facts": mars_facts(),
-        "Hemispheres": mars_hemis(browser),
+        "title": first_title,
+        "paragraph": first_paragraph,
+        "image_URL": jpl_image(browser),
+        "weather": mars_weather_tweet(browser),
+        "facts": mars_facts(),
+        "hemispheres": mars_hemis(browser),
     }
 
     # Quit the browser and return the scraped results
@@ -50,6 +54,7 @@ def jpl_image(browser):
 
     # Go to 'FULL IMAGE', then to 'more info'
     browser.click_link_by_partial_text('FULL IMAGE')
+    sleep(1)
     browser.click_link_by_partial_text('more info')
 
     html = browser.html
@@ -92,9 +97,7 @@ def mars_hemis(browser):
     links = hemi_soup.find_all('h3')
     
     for hemi in links:
-    hemi_strings.append(hemi.text)
-    
-    hemi_strings
+        hemi_strings.append(hemi.text)
 
     # Initialize hemisphere_image_urls list
     hemisphere_image_urls = []
